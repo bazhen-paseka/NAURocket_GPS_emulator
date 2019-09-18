@@ -27,6 +27,9 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
+	#include <string.h>
+	#include <stdio.h>
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -47,6 +50,11 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
+
+	#define	DEBUG_STRING_SIZE		200
+	char DebugString[DEBUG_STRING_SIZE];
+
+	volatile uint8_t time_to_send_data_flag = 0;
 
 /* USER CODE END PV */
 
@@ -103,6 +111,14 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+	  if (time_to_send_data_flag == 1)
+	  {
+		sprintf(DebugString,"$GPGGA,105922.00,5029.75292,N,03046.53058,E,1,12,0.93,120.5,M,25.3,M,,*55\r\n");
+		HAL_UART_Transmit(&huart1, (uint8_t *)DebugString, strlen(DebugString), 100);
+		time_to_send_data_flag = 0;
+	  }
+
+
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
