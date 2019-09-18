@@ -40,6 +40,10 @@
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
 
+	#define	GPS_STRING_SIZE				200
+	#define	GPS_STRING_QNT				9
+	#define DELAY_BETWEEN_STRINGS_MS	25
+
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -51,10 +55,8 @@
 
 /* USER CODE BEGIN PV */
 
-	#define	DEBUG_STRING_SIZE		200
-	char DebugString[DEBUG_STRING_SIZE];
-
-	volatile uint8_t time_to_send_data_flag = 0;
+	char GPS_String[GPS_STRING_QNT][GPS_STRING_SIZE];
+	volatile uint8_t time_to_send_packet_flag = 0;
 
 /* USER CODE END PV */
 
@@ -107,17 +109,29 @@ int main(void)
 
   /* USER CODE END 2 */
 
+	sprintf(GPS_String[0],"$GPRMC,093808.00,A,5029.75450,N,03046.52995,E,0.055,,180919,,,A*7C\r\n");
+	sprintf(GPS_String[1],"$GPVTG,,T,,M,0.055,N,0.101,K,A*23\r\n");
+	sprintf(GPS_String[2],"$GPGGA,093808.00,5029.75450,N,03046.52995,E,1,08,1.21,124.5,M,25.3,M,,*54\r\n");
+	sprintf(GPS_String[3],"$GPGSA,A,3,20,21,27,10,32,08,18,11,,,,,1.97,1.21,1.55*0B\r\n");
+	sprintf(GPS_String[4],"$GPGSV,4,1,15,01,09,283,25,04,46,183,14,08,57,285,27,10,70,069,30*7D\r\n");
+	sprintf(GPS_String[5],"$GPGSV,4,2,15,11,17,298,25,14,16,164,,15,04,031,15,16,04,206,*79\r\n");
+	sprintf(GPS_String[6],"$GPGSV,4,3,15,18,31,287,23,20,41,064,27,21,20,102,22,24,04,063,*78\r\n");
+	sprintf(GPS_String[7],"$GPGSV,4,4,15,27,62,196,30,28,03,343,,32,34,148,28*4D\r\n");
+	sprintf(GPS_String[8],"$GPGLL,5029.75450,N,03046.52995,E,093808.00,A,A*6D\r\n");
+
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	  if (time_to_send_data_flag == 1)
+	  if (time_to_send_packet_flag == 1)
 	  {
-		sprintf(DebugString,"$GPGGA,105922.00,5029.75292,N,03046.53058,E,1,12,0.93,120.5,M,25.3,M,,*55\r\n");
-		HAL_UART_Transmit(&huart1, (uint8_t *)DebugString, strlen(DebugString), 100);
-		time_to_send_data_flag = 0;
+		  for (int i=0; i<GPS_STRING_QNT; i++)
+		  {
+			HAL_UART_Transmit(&huart1, (uint8_t *)GPS_String[i], strlen(GPS_String[i]), 100);
+			HAL_Delay(DELAY_BETWEEN_STRINGS_MS);
+		  }
+		  time_to_send_packet_flag = 0;
 	  }
-
 
     /* USER CODE END WHILE */
 

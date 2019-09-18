@@ -43,7 +43,7 @@
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN PV */
 
-	extern uint8_t time_to_send_data_flag;
+	extern uint8_t time_to_send_packet_flag;
 
 /* USER CODE END PV */
 
@@ -207,7 +207,7 @@ void TIM3_IRQHandler(void)
   /* USER CODE BEGIN TIM3_IRQn 0 */
 
 	HAL_GPIO_TogglePin(LED_RED_GPIO_Port, LED_RED_Pin);
-	time_to_send_data_flag = 1;
+	time_to_send_packet_flag = 1;
 
   /* USER CODE END TIM3_IRQn 0 */
   HAL_TIM_IRQHandler(&htim3);
